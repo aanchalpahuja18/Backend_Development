@@ -35,10 +35,7 @@ const mongoose = require('mongoose');
 //with mongoose we are now connecting our db with our server and the configuration object is required to pass
 
 //this basically returns a promise 
-mongoose.connect('mongodb://localhost:27017/myDatabase', {
-    usenewurlparser: true,
-    useunifiedtopology: true
-})
+mongoose.connect('mongodb://localhost:27017/myDatabase')
 .then(() => {
     console.log("Connection successful!");
 })
