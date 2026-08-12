@@ -32,7 +32,7 @@ const mongoose = require('mongoose');
 
 //if the db is not created and the name is given then a new db will be created
 
-//with mongoose we are now connecting our db with our server and the configuration object is required to pass
+//with mongoose we are now connecting our db with our server and the configuration object is not required to pass since the modern mongodb drivers have already this config object on by default and they do not recognize it as an options anymore.
 
 //this basically returns a promise 
 mongoose.connect('mongodb://localhost:27017/myDatabase')
