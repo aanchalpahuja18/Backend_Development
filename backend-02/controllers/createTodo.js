@@ -9,11 +9,11 @@ async function createTodo(req,res) {
         //extract title and description from the request body
         const {title, description} = req.body;
         //create a new todo object and insert it in the DB
-        const response = todo.create({title,description});
+        const newTodo = todo.create({title,description});
         //send a json response with a success flag
         res.status(200).json({
             success: true,
-            data: response,
+            data: newTodo,
             message: "Entry created successfully!"
         })
     } catch (error) {
