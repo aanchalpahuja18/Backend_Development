@@ -26,6 +26,8 @@ async function getTodo(req, res) {
     }
 }
 
+module.exports = getTodo;
+
 async function getTodoById(req,res) {
     try{
         //extract id first
@@ -60,4 +62,4 @@ async function getTodoById(req,res) {
 }
 
 
-module.exports = getTodo, getTodoById;
+module.exports = getTodoById;
