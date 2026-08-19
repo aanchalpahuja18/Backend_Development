@@ -1,45 +1,49 @@
-const Blog = require("../models/BlogModel");
-
+const Post = require("../models/PostModel");
 
 async function createPost(req, res) {
     try{
-        const {title, content} = req.body;
-        const post = Blog.create({title, content});
+        const {title, body} = req.body;
+
+        const post = new Post({
+            title, body
+        });
+
+        const savedPost = await post.save();
+
         res.status(200).json({
             success: true,
-            data: post,
+            data: savedPost,
             message: "Post created successfully!"
-        })
-    }
-    catch(err) {
-        console.log(err);
-        res.status(500).json({
-            success: false,
-            data: "Internal server error",
-            message: err.message
-        })
-    }
-}
-
-module.exports = createPost;
-
-async function getPosts(req, res) {
-    try{
-        const posts = await Blog.find({});
-        res.status(200).json({
-            success: true,
-            data: posts,
-            message: "Posts retrived successfully!"
         })
     }
     catch(err){
         console.log(err);
         res.status(500).json({
             success: false,
-            data: "Internal server error",
-            message: err.message
+            data: err.message,
+            message: "Failure in creating post!"
         })
     }
 }
 
-module.exports = getPosts;
+async function getPost(req, res) {
+    try{
+        const postData = await Post.find().populate("comments").exec();
+
+        res.status(200).json({
+            success: true,
+            data: postData,
+            message: "Post retrieved successfully!"
+        })
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            data: err.message,
+            message: "Failure in retrieving post!"
+        })
+    }
+}
+
+module.exports = {createPost, getPost}
