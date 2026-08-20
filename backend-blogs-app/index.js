@@ -21,10 +21,12 @@ app.use("/api/v1", blogRoutes);
 const dbConnect = require("./config/database");
 dbConnect();
 
+//activating the server at port no 3000
 app.listen(PORT, () => {
     console.log(`Server started at ${PORT}`);
 })
 
+//default route
 app.get("/", (req, res) => {
     res.send(`<h1>Welcome to my blogs App!</h1>`)
 })
