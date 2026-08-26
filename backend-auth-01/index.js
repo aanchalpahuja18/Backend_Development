@@ -24,3 +24,7 @@ app.use("/api/v1", user);
 app.listen(PORT, (req, res) => {
     console.log(`App is listening at ${PORT}`);
 })
+
+app.get("/", (req, res) => {
+    res.send("Welcome to the Auth API");
+})
