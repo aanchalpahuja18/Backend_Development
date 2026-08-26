@@ -20,6 +20,7 @@ async function signup(req, res){
         //secure password:
         let hashedPassword;
         try{
+            //hash is a method that takes 2 arguments: password to be hashed & no of rounds
             hashedPassword = await bcrypt.hash(password, 10);
         }
         catch(err){ 
