@@ -94,6 +94,8 @@ async function login(req, res) {
             let token = jwt.sign(payload, secret, {
                 expiresIn: "2h"
             })
+
+            user = user.toObject();
             user.token = token;
             user.password = undefined;
 
