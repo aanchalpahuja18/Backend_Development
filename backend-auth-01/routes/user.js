@@ -1,4 +1,5 @@
 const express = require("express");
+const User = require("../model/UserModel");
 
 const router = express.Router();
 
@@ -30,6 +31,28 @@ router.get("/admin", auth, isAdmin, (req, res) => {
         success: true,
         message: "Welcome to the admin portal"
     })
+})
+
+router.get("/email", auth, async (req, res) => {
+    try{
+        const id = req.user.id;
+        console.log("Id", id);
+        const user = await User.findById(id);
+        console.log("User details", user);
+
+        return res.status(200).json({
+            success: true,
+            user: user,
+            id: id,
+            message: "User details fetched successfully!"
+        })
+    } catch(err){
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching user details!"
+        })
+    }
 })
 
 module.exports = router;
