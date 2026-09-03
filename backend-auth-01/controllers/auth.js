@@ -109,6 +109,12 @@ async function login(req, res) {
                 token,
                 message: "User logged in succeasfully!"
             })
+            // return res.status(200).json({
+            //     success: true,
+            //     user,
+            //     token,
+            //     message: "User logged in succeasfully!"
+            // })
         }
         else{
             //password do not match
