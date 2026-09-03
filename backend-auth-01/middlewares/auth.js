@@ -6,7 +6,12 @@ require("dotenv").config();
 
 function auth(req, res, next){
     try{
-        const token = req.body.token;
+
+        console.log("cookies", req.cookies.token);
+        console.log("body", req.body.token);
+        console.log("header", req.header("Authorization"))
+
+        const token = req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer ", "");
 
         if(!token){
             return res.status(401).json({
@@ -21,9 +26,9 @@ function auth(req, res, next){
             console.log("printing decoded token:");
             console.log(decode);
 
-            req.body = decode;
+            req.user = decode;
             console.log("printing req body");
-            console.log(req.body);
+            console.log(req.user);
         }catch(err){
             return res.status(401).json({
                 success: false,
@@ -42,7 +47,7 @@ function auth(req, res, next){
 
 function isStudent(req, res, next){
     try{
-        if(req.body.role !== "Student"){
+        if(req.user.role !== "Student"){
             return res.status(401).json({
                 success: false,
                 message: "This is a protected route only for students"
@@ -56,13 +61,11 @@ function isStudent(req, res, next){
             message: "You do not have valid permission to enter here!"
         })
     }
-
-    next();
 }
 
 function isAdmin(req, res, next) {
     try{
-        if(req.body.role !== "Admin"){
+        if(req.user.role !== "Admin"){
             return res.status(401).json({
                 success: false,
                 message: "This is a protected route only for admins"
