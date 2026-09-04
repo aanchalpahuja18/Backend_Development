@@ -8,10 +8,10 @@ function auth(req, res, next){
     try{
 
         console.log("cookies", req.cookies.token);
-        console.log("body", req.body.token);
+        console.log("body", req.body?.token);
         console.log("header", req.header("Authorization"))
 
-        const token = req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer ", "");
+        const token = req.cookies.token || req.body?.token || req.header("Authorization").replace("Bearer ", "");
 
         if(!token){
             return res.status(401).json({
@@ -38,6 +38,7 @@ function auth(req, res, next){
 
            next();
     } catch(err){
+        console.log("Error: ", err.message);
         return res.status(500).json({
             success: false,
             message: "Token could not be verified!"
