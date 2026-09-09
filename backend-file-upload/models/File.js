@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const File = mongoose.Schema({
+const fileSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
     },
     tags: {
-
+        type: String
     },
     email: {
         type: String,
@@ -14,7 +14,9 @@ const File = mongoose.Schema({
         default: "aanchalpahuja34@gmail.com"
     },
     file: {
-        type: FileReader,
-        required: true
+        type: String
     }
 })
+
+const File = mongoose.model("File", fileSchema);
+module.exports = File;
