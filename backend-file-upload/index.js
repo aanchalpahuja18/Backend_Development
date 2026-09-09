@@ -14,7 +14,7 @@ app.use(fileUpload());
 
 //routes mounting:
 const routes = require("./routes/FileUpload");
-app.use("/api/v1", routes);
+app.use("/api/v1/upload", routes);
 
 //database connect:
 const dbConnect = require("./config/database");
@@ -22,12 +22,11 @@ dbConnect();
 
 //cloudinary connect:
 const cloudinaryConnect = require("./config/cloudinary");
-const fileUpload = require("express-fileupload");
 cloudinaryConnect();
 
 //server activate
 app.listen(PORT, (req, res) => {
-    console.log("App is listening at ", PORT);
+    console.log("App is running at ", PORT);
 })
 
 
