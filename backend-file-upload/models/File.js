@@ -13,7 +13,7 @@ const fileSchema = mongoose.Schema({
         required: true,
         default: "aanchalpahuja34@gmail.com"
     },
-    file: {
+    url: {
         type: String
     }
 })
