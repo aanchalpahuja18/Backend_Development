@@ -41,8 +41,10 @@ function checkFileTypeSupported(type, supportedTypes){
 }
 
 async function uploadFileToCloudinary(file, folder){
-    console.log("here3")
+    console.log("here4")
     const options = {folder};
+    console.log("Temp file path: ", file.tempFilePath);
+    options.resource_type = "auto"
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
 
@@ -54,8 +56,6 @@ async function imageUpload(req, res) {
         const file = req.files.imageFile;
         console.log(file);
 
-        console.log("here");
-
         //validation
         const supportedTypes = ["jpg", "jpeg", "png"];
         if(!name || !email || !tags){
@@ -65,6 +65,7 @@ async function imageUpload(req, res) {
             })
         }
         const fileType = file.name.split(".")[1].toLowerCase();
+        console.log("File type:", fileType)
 
         if(!checkFileTypeSupported(fileType, supportedTypes)){
             return res.status(400).json({
@@ -72,15 +73,21 @@ async function imageUpload(req, res) {
                 message: "File format is not supported in our system!"
             })
         }
-        console.log("her2")
 
         //file format supported:
         const response = await uploadFileToCloudinary(file, "Aanchal_Files");
-        console.log("here4")
         console.log(response);
+        //create entry in db:
+        const fileData = await File.create({
+            name,
+            email,
+            tags,
+            url: response.secure_url
+        })
 
         return res.status(200).json({
             success: true,
+            imageUrl: response.secure_url,
             message: "Image uploaded successfully!"
         })
         
@@ -94,4 +101,60 @@ async function imageUpload(req, res) {
     }
 }
 
-module.exports = {localFileUpload, imageUpload};
+async function videoUpload(req, res) {
+    try {
+        const {name, tags, email} = req.body;
+        console.log(name, tags, email);
+
+        if(!name || !tags || !email){
+            return res.status(400).json({
+                success: false,
+                message: "Please enter all the required fields!"
+            })
+        }
+
+        const file = req.files.videoFile;
+        console.log(file);
+
+        const supportedTypes = ["mp4", "mov"];
+        const fileType = file.name.split(".")[1].toLowerCase();
+        console.log("File type", fileType);
+        
+        //Todo: Add a upper limit of 5mb for video
+
+        console.log("here1")
+        if(!checkFileTypeSupported(fileType, supportedTypes)){
+            return res.status(400).json({
+                success: false,
+                message: "File format is not supported in our system!"
+            })
+        }
+
+        //upload to cloudinary:
+        console.log("here2")
+        const response = await uploadFileToCloudinary(file, "Aanchal_Files");
+        console.log(response);
+        console.log("here3")
+
+        const fileData = await File.create({
+            name,
+            email,
+            tags,
+            url: response.secure_url
+        })
+
+        return res.status(200).json({
+            success: true,
+            videoUrl: response.secure_url,
+            message: "Video uploaded successfully!"
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(400).json({
+            success: false,
+            message: "Something went wrong!"
+        })
+    }
+}
+
+module.exports = {localFileUpload, imageUpload, videoUpload};
