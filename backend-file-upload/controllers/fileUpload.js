@@ -40,30 +40,46 @@ function checkFileTypeSupported(type, supportedTypes){
     return supportedTypes.includes(type);
 }
 
-async function uploadFileToCloudinary(file, folder){
-    console.log("here4")
+async function uploadFileToCloudinary(file, folder, quality){
     const options = {folder};
     console.log("Temp file path: ", file.tempFilePath);
+
+    if(quality){
+        options.quality = quality;
+    }
     options.resource_type = "auto"
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
+
+function checkFileSize(file){
+   return file.size > 500000 ? true: false;
+}
+
 
 async function imageUpload(req, res) {
     try{
         //data fetch
         const {name, email, tags} = req.body;
         console.log(name, email, tags);
-        const file = req.files.imageFile;
-        console.log(file);
 
-        //validation
-        const supportedTypes = ["jpg", "jpeg", "png"];
         if(!name || !email || !tags){
             return res.status(500).json({
                 success: false,
                 message: "Please enter all the required fields"
             })
         }
+        const file = req.files.imageFile;
+        console.log(file);
+
+        if(checkFileSize(file)){
+            return res.status(400).json({
+                success: false,
+                message: "File size is too long!"
+            })
+        }
+
+        //validation
+        const supportedTypes = ["jpg", "jpeg", "png"];
         const fileType = file.name.split(".")[1].toLowerCase();
         console.log("File type:", fileType)
 
@@ -157,4 +173,53 @@ async function videoUpload(req, res) {
     }
 }
 
-module.exports = {localFileUpload, imageUpload, videoUpload};
+async function imageReduceUpload(req, res) {
+    try{
+        const {name, tags, email} = req.body;
+        console.log(name, tags, email);
+
+        if(!name || !tags || !email){
+            return res.status(400).json({
+                success: false,
+                message: "Please enter all the required fields!"
+            })
+        }
+
+        const file = req.files.imageReduceFile;
+        console.log(file);
+
+        const supportedTypes = ["jpg", "jpeg", "png"];
+        const fileType = file.name.split(".")[1];
+        if(!checkFileTypeSupported(fileType, supportedTypes)){
+            return res.status(400).json({
+                success: false,
+                message: "File format is not supported in our system!"
+            })
+        }
+
+        const response = await uploadFileToCloudinary(file, "Aanchal_Files", 30);
+        console.log(response);
+
+        const fileData = await File.create({
+            name, 
+            email,
+            tags,
+            url: response.secure_url
+        })
+
+        return res.status(200).json({
+            success: true,
+            imageUrl: response.secure_url,
+            message: "Image uploaded successfully!"
+        })
+    }
+    catch(err){
+        console.log(err);
+        return res.status(400).json({
+            success: false,
+            message: "Something went wrong!"
+        })
+    }
+}
+
+module.exports = {localFileUpload, imageUpload, videoUpload, imageReduceUpload};
