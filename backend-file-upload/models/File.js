@@ -40,7 +40,7 @@ fileSchema.post("save", async function (doc) {
             from: "Aanchal Pahuja",
             to: doc.email,
             subject: "New File Uploaded on Cloudinary",
-            html: `<h2>Hello World</h2> <p>File Uploaded Successfully</p>`
+            html: `<h2>Hello World</h2> <p>File Uploaded Successfully: <a href="${doc.url}">${doc.url}</a></p>`
         })
         console.log("Info object", info)
     } catch(err){
